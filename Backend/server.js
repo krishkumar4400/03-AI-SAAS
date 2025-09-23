@@ -14,9 +14,9 @@ await connectCloudinary();
 app.use(express.json());
 app.use(cors({credentials: true}));
 
-// app.get('/', (req,res) => {
-//     res.send("hello express"); 
-// });
+app.get('/', (req,res) => {
+    res.send("hello express"); 
+});
 
 app.use(clerkMiddleware());
 
