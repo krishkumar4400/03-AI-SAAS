@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Manrope:wght@200..800&family=Outfit:wght@100..900&display=swap');
+@import "tailwindcss";
+
+*{
+ font-family: "Outfit", sans-serif;
+}
+
+@theme {
+    --color-primary: #5044E5;
+}
+
+/* Hide scrollbar for the whole app */
+body {
+  overflow: hidden; /* Scroll completely disabled */
+}
+
+/* Agar scroll chahiye lekin scrollbar na dikhe */
+body {
+  overflow: auto; 
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE & Edge */
+}
+
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+div::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* Poore app ke liye smooth scroll + scrollbar hide */
+html {
+  scroll-behavior: smooth; /* Smooth scrolling */
+}
+
+body {
+  overflow: auto; /* Scroll allow karna */
+  scrollbar-width: none; /* Firefox scrollbar hide */
+  -ms-overflow-style: none; /* IE & Edge scrollbar hide */
+}
+
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera scrollbar hide */
+}
+/* tailwind.css me add karo */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.reset-tw, .reset-tw *{
+  all: revert !important; 
+}
+
+.cl-drawerRoot {
+  z-index: 10;
+}
