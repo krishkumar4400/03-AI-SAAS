@@ -1,8 +1,4 @@
-import {
-  Image,
-  Pen,
-  Sparkles,
-} from "lucide-react";
+import { DownloadIcon, Image, Pen, SkipForward, Sparkles } from "lucide-react";
 import React, { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -12,7 +8,6 @@ import { useAuth } from "@clerk/clerk-react";
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
 const GenerateImages = () => {
-
   const imageStyle = [
     "Realistic",
     "Ghibli Style",
@@ -27,35 +22,55 @@ const GenerateImages = () => {
   const [input, setInput] = useState("");
   const [publish, setPublish] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState("");
+  const [requested, setRequested] = useState(false);
+  const [clear, setClear] = useState(true);
 
-  const {getToken} = useAuth();
+  const { getToken } = useAuth();
 
-    const onSubmitHandler = async (e) => {
-      e.preventDefault();
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
 
-      try {
-        setLoading(true);
-        const prompt = `Generate an image of ${input} in the style ${selectedStyle}`;
-        const {data} = await axios.post('/api/ai/generate-image', {
-          prompt, publish
-        }, {
+    try {
+      setLoading(true);
+      setRequested(true);
+      setClear(false);
+      const prompt = `Generate an image of ${input} in the style ${selectedStyle}`;
+      const { data } = await axios.post(
+        "/api/ai/generate-image",
+        {
+          prompt,
+          publish,
+        },
+        {
           headers: {
-            Authorization: `Bearer ${await getToken()}`
-          }
-        });
-
-        if(data.success) {
-          toast.success(data.message);
-          setContent(data.content);
-        } else {
-          toast.error(data.message);
+            Authorization: `Bearer ${await getToken()}`,
+          },
         }
-      } catch (error) {
-        toast.error(error.message);
+      );
+
+      if (data.success) {
+        toast.success(data.message);
+        setContent(data.content);
+        setRequested(false);
+      } else {
+        toast.error(data.message);
       }
-      setLoading(false);
-    };
+    } catch (error) {
+      toast.error(error.message);
+    }
+    setLoading(false);
+  };
+
+  const downloadImage = () => {
+    if (!content) return;
+    const link = document.createElement("a");
+    link.href = content;
+    link.download = "processed-image.png"; // file name
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <div className="h-full overflow-y-scroll p-6 flex items-start flex-wrap gap-4 text-slate-700">
@@ -118,7 +133,11 @@ const GenerateImages = () => {
             disabled={loading}
             className="bg-gradient-to-r from-green-500 via-blue-700 to-rose-500 via-50% gap-2 w-full flex items-center justify-center rounded-lg text-white py-2 text-sm cursor-pointer"
           >
-            {loading ? <span className="w-5 h-5 mt-1 border-2 border-t-transparent rounded-full animate-spin"></span> : <Image className="w-5" />}
+            {loading ? (
+              <span className="w-5 h-5 mt-1 border-2 border-t-transparent rounded-full animate-spin"></span>
+            ) : (
+              <Image className="w-5" />
+            )}
             Style
           </button>
         </div>
@@ -130,18 +149,47 @@ const GenerateImages = () => {
           <Image className="w-6 text-[#00ff1e]" />
           Generated image
         </h2>
-{
-  content ? (
-    <div className="h-full mt-3">
-        <img src={content} className="w-full h-full" alt="image" />
-    </div>
-  ) : (        <div className="flex-1 flex justify-center items-center">
-          <div className="text-sm flex flex-col items-center gap-5 text-gray-400">
-            <Image className="w-9 h-9" />
-            <p>Enter a topic and click “Generate Titles ” to get started</p>
+
+        {content && !clear ? (
+          <div className="h-full mt-3">
+            <img src={content} className="w-full h-full" alt="image" />
+            {content && (
+              <div className="flex justify-between text-sm px-3 gap-4">
+                <span
+                  onClick={() => {
+                    setClear(true);
+                    setContent("");
+                  }}
+                  className="flex items-center justify-center gap-2 text-white w-1/2 text-center bg-red-500 py-1.5 rounded-lg my-2 cursor-pointer"
+                >
+                  <SkipForward />
+                  Clear
+                </span>
+                <span
+                  onClick={downloadImage}
+                  className=" flex items-center justify-center gap-2 text-white w-1/2 text-center bg-blue-500 py-1.5 rounded-lg my-2 cursor-pointer"
+                >
+                  <DownloadIcon />
+                  Download
+                </span>
+              </div>
+            )}
           </div>
-        </div>)
-}
+        ) : (
+          <div className="flex-1 flex justify-center items-center">
+            {requested && !content ? (
+              <div className="text-sm flex flex-col items-center gap-5 text-gray-400">
+                <span className="w-12 h-12 border-4 border-pink-600 border-t-transparent my-2 rounded-full animate-spin"></span>
+                <p>Wait For Few Seconds</p>
+              </div>
+            ) : (
+              <div className="text-sm flex flex-col items-center gap-5 text-gray-400">
+                <Image className="w-9 h-9" />
+                <p>Enter a topic and click “Generate Titles ” to get started</p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

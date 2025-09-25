@@ -1,4 +1,4 @@
-import { Eraser, Sparkles } from "lucide-react";
+import { DownloadIcon, Eraser, SkipForward, Sparkles } from "lucide-react";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -10,6 +10,8 @@ const BlogTitles = () => {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [content, setContent] = useState("");
+    const [requested, setRequested] = useState(false);
+    const [clear, setClear] = useState(true);
 
   const { getToken } = useAuth();
   const onSubmitHandler = async (e) => {
@@ -17,6 +19,8 @@ const BlogTitles = () => {
 
     try {
       setLoading(true);
+      setRequested(true);
+      setClear(false);
       const formData = new FormData();
       formData.append("image", input);
 
@@ -33,6 +37,7 @@ const BlogTitles = () => {
       if (data.success) {
         toast.success(data.message);
         setContent(data.content);
+        setRequested(false);
       } else {
         toast.error(data.message);
       }
@@ -40,6 +45,16 @@ const BlogTitles = () => {
       toast.error(error.message);
     }
     setLoading(false);
+  };
+
+  const downloadImage = () => {
+    if (!content) return;
+    const link = document.createElement("a");
+    link.href = content;
+    link.download = "processed-image.png"; // file name
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -89,18 +104,46 @@ const BlogTitles = () => {
           <Eraser className="w-6 text-[#ff6f00]" />
           Processed Image
         </h2>
-        {content ? (
+        {content && !clear ? (
           <div className="h-full mt-3">
             <img src={content} className="w-full h-full" alt="image" />
+            {content && (
+              <div className="flex justify-between text-sm px-3 gap-4">
+                <span
+                  onClick={() => {
+                    setClear(true);
+                    setContent("");
+                  }}
+                  className="flex items-center justify-center gap-2 text-white w-1/2 text-center bg-red-500 py-1.5 rounded-lg my-2 cursor-pointer"
+                >
+                  <SkipForward />
+                  Clear
+                </span>
+                <span
+                  onClick={downloadImage}
+                  className=" flex items-center justify-center gap-2 text-white w-1/2 text-center bg-blue-500 py-1.5 rounded-lg my-2 cursor-pointer"
+                >
+                  <DownloadIcon />
+                  Download
+                </span>
+              </div>
+            )}
           </div>
         ) : (
           <div className="flex-1 flex justify-center items-center">
-            <div className="text-sm flex flex-col items-center gap-5 text-gray-400">
-              <Eraser className="w-9 h-9" />
-              <p className="text-center">
-                Upload an image and click "Remove Background" to get started
-              </p>
-            </div>
+            {requested && !content ? (
+              <div className="text-sm flex flex-col items-center gap-5 text-gray-400">
+                <span className="w-12 h-12 border-4 border-pink-600 border-t-transparent my-2 rounded-full animate-spin"></span>
+                <p>Wait For Few Seconds</p>
+              </div>
+            ) : (
+              <div className="text-sm flex flex-col items-center gap-5 text-gray-400">
+                <Eraser className="w-9 h-9" />
+                <p className="text-center">
+                  Upload an image and click "Remove Background" to get started
+                </p>
+              </div>
+            )}
           </div>
         )}
       </div>

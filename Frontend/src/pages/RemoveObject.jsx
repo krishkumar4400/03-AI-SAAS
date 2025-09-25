@@ -1,6 +1,6 @@
 import { useAuth } from "@clerk/clerk-react";
 import axios from "axios";
-import { Scissors, Sparkles } from "lucide-react";
+import { Download, DownloadIcon, Scissors, SkipBack, SkipForward, Sparkles } from "lucide-react";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -11,6 +11,8 @@ const BlogTitles = () => {
   const [object, setObject] = useState("");
   const [loading, setLoading] = useState(false);
   const [content, setContent] = useState("");
+  const [requested, setRequested] = useState(false);
+  const [clear, setClear] = useState(true);
 
   const { getToken } = useAuth();
 
@@ -19,7 +21,10 @@ const BlogTitles = () => {
 
     try {
       setLoading(true);
+      setRequested(true);
+      setClear(false);
       if (object.split(" ").length > 1) {
+        setLoading(false);
         return toast("Please enter only one object name");
       }
       const formData = new FormData();
@@ -39,6 +44,7 @@ const BlogTitles = () => {
       if (data.success) {
         toast.success(data.message);
         setContent(data.content);
+        setRequested(false);
       } else {
         toast.error(data.message);
       }
@@ -47,6 +53,16 @@ const BlogTitles = () => {
     }
     setLoading(false);
   };
+const downloadImage = () => {
+  if (!content) return;
+  const link = document.createElement("a");
+  link.href = content;
+  link.download = "processed-image.png"; // file name
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
 
   return (
     <div className="h-full overflow-y-scroll p-6 flex items-start flex-wrap gap-4 text-slate-800">
@@ -98,21 +114,52 @@ const BlogTitles = () => {
       </form>
 
       {/* Right column */}
-      <div className="p-4 w-full min-h-96 max-w-lg bg-white rounded-lg border border-gray-300 flex flex-col max-h-[600px]">
+      <div className="p-4 w-full min-h-96 max-w-lg bg-white rounded-lg border border-gray-300 flex flex-col max-h-[600px] overflow-y-auto">
         <h2 className="flex items-center text-xl font-semibold gap-3 text-slate-700">
           <Scissors className="w-6 text-[#0048ff]" />
           Processed Image
         </h2>
-        {content ? (
-          <img src={content} className="h-full w-full mt-3" alt="image" />
+        {content && !clear ? (
+          <>
+            <img src={content} className="h-full w-full mt-3" alt="image" />
+            {content && (
+              <div className="flex justify-between text-sm px-3 gap-4">
+                <span
+                  onClick={() => {
+                    setClear(true);
+                    setContent("");
+                  }}
+                  className="flex items-center justify-center gap-2 text-white w-1/2 text-center bg-red-500 py-1.5 rounded-lg my-2 cursor-pointer"
+                >
+                  <SkipForward />
+                  Clear
+                </span>
+                <span
+                
+                  onClick={downloadImage}
+                  className=" flex items-center justify-center gap-2 text-white w-1/2 text-center bg-blue-500 py-1.5 rounded-lg my-2 cursor-pointer"
+                >
+                  <DownloadIcon />
+                  Download
+                </span>
+              </div>
+            )}
+          </>
         ) : (
           <div className="flex-1 flex justify-center items-center">
-            <div className="text-sm flex flex-col items-center gap-5 text-gray-400">
-              <Scissors className="w-9 h-9" />
-              <p className="text-center">
-                Upload an image and click "Remove Object" to get started
-              </p>
-            </div>
+            {requested && !content ? (
+              <div className="text-sm flex flex-col items-center gap-5 text-gray-400">
+                <span className="w-12 h-12 border-4 border-pink-600 border-t-transparent my-2 rounded-full animate-spin"></span>
+                <p>Wait For Few Seconds</p>
+              </div>
+            ) : (
+              <div className="text-sm flex flex-col items-center gap-5 text-gray-400">
+                <Scissors className="w-9 h-9" />
+                <p className="text-center">
+                  Upload an image and click "Remove Object" to get started
+                </p>
+              </div>
+            )}
           </div>
         )}
       </div>
