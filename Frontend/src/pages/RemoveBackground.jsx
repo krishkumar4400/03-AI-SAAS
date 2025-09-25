@@ -10,8 +10,8 @@ const BlogTitles = () => {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [content, setContent] = useState("");
-    const [requested, setRequested] = useState(false);
-    const [clear, setClear] = useState(true);
+  const [requested, setRequested] = useState(false);
+  const [clear, setClear] = useState(true);
 
   const { getToken } = useAuth();
   const onSubmitHandler = async (e) => {
