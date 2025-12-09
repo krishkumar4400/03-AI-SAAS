@@ -12,8 +12,8 @@
 /* Hide scrollbar for the whole app */
 body {
   overflow: hidden; /* Scroll completely disabled */
-  user-select: none;
-  -webkit-user-select:none
+  /* user-select: none; */
+  /* -webkit-user-select:none */
 }
 
 /* Agar scroll chahiye lekin scrollbar na dikhe */

@@ -15,33 +15,21 @@ import { useAuth } from "@clerk/clerk-react";
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
-const LanguageTranslator = () => {
-  const languages = [
-    "English",
-    "Hindi",
-    "Bhojpuri",
-    "Gujarati",
-    "Spanish",
-    "French",
-    "German",
-    "Chinese",
-    "Japanese",
-    "Arabic",
-    "Korean",
-    "Portuguese",
-    "Russian",
-    "Italian",
-    "Dutch",
-    "Turkish",
+const SocialMediaCaption = () => {
+  const platforms = [
+    "Instagram",
+    "Facebook",
+    "Youtube",
+    "LinkedIn",
+    "Twitter"
   ];
-;
   const tones = ["Formal", "Casual"];
 
-  const [input, setInput] = useState("");
+  const [topic, setTopic] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
-  const [targetLanguage, setTargetLanguage] = useState("hindi");
-  const [tone, setTone] = useState('');
+  const [platform, setPlatform] = useState("");
+  const [tone, setTone] = useState("");
   const { getToken } = useAuth();
 
   const onSubmitHandler = async (e) => {
@@ -51,11 +39,11 @@ const LanguageTranslator = () => {
       setLoading(true);
 
       const { data } = await axios.post(
-        "/api/ai/translate-text",
+        "/api/ai/social-caption",
         {
-          input,
-          targetLanguage,
-          tone
+          topic,
+          platform,
+          tone,
         },
         {
           headers: {
@@ -66,7 +54,7 @@ const LanguageTranslator = () => {
 
       if (data.success) {
         toast.success(data.message);
-        setContent(data.translation);
+        setContent(data.caption);
       } else {
         toast.error(data.message);
       }
@@ -85,50 +73,60 @@ const LanguageTranslator = () => {
       >
         <div className="flex items-center gap-3">
           <Sparkles className="w-6 text-[#8E37EB]" />
-          <h1 className="text-xl font-semibold">AI Language Translator</h1>
+          <h1 className="text-xl font-semibold">AI Caption Generator</h1>
         </div>
 
         <h2 className="font-xl text-slate-800 font-medium mt-7 mb-2">
-          Input Text (any language)
+          Input Topic
         </h2>
-        <textarea
+        <input
           rows={8}
           required
-          onChange={(e) => setInput(e.target.value)}
-          value={input}
+          onChange={(e) => setTopic(e.target.value)}
+          value={topic}
           className="outline-none text-sm w-full p-2 px-3 mt-2 rounded-md border border-gray-300"
           type="text"
-          placeholder="Enter you text to translate by intelligent AI models"
+          placeholder="Enter your topic to generate caption by intelligent AI models"
         />
-        <div className="flex gap-3 justify-center items-center mt-4 flex-wrap sm:max-w-9/11 pb-6">
-          {languages.map((item, index) => (
-            <span
-              onClick={() => setTargetLanguage(item)}
-              key={index}
-              className={`text-xs px-4 py-1 border rounded-full cursor-pointer ${
-                targetLanguage === item
-                  ? "bg-purple-50 border-purple-700"
-                  : "text-gray-500 border-gray-300"
-              }`}
-            >
-              {item}
-            </span>
-          ))}
+        <div>
+          <p className="pt-4 pb-2 text-sm font-light text-gray-600">
+            select a platform
+          </p>
+          <div className="flex gap-3  items-center  flex-wrap sm:max-w-9/11 pb-6">
+            {platforms.map((item, index) => (
+              <span
+                onClick={() => setPlatform(item)}
+                key={index}
+                className={`text-xs px-4 py-1 border rounded-full cursor-pointer ${
+                  platform === item
+                    ? "bg-purple-50 border-purple-700"
+                    : "text-gray-500 border-gray-300"
+                }`}
+              >
+                {item}
+              </span>
+            ))}
+          </div>
         </div>
-        <div className="flex gap-3 justify-center items-center flex-wrap sm:max-w-9/11 pb-6">
-          {tones.map((item, index) => (
-            <span
-              onClick={() => setTone(item)}
-              key={index}
-              className={`text-xs px-4 py-1 border rounded-full cursor-pointer ${
-                tone === item
-                  ? "bg-purple-50 border-purple-700"
-                  : "text-gray-500 border-gray-300"
-              }`}
-            >
-              {item}
-            </span>
-          ))}
+        <div>
+          <p className="pt-4 pb-2 text-sm font-light text-gray-600">
+            select tone
+          </p>
+          <div className="flex gap-3  items-center flex-wrap sm:max-w-9/11 pb-6">
+            {tones.map((item, index) => (
+              <span
+                onClick={() => setTone(item)}
+                key={index}
+                className={`text-xs px-4 py-1 border rounded-full cursor-pointer ${
+                  tone === item
+                    ? "bg-purple-50 border-purple-700"
+                    : "text-gray-500 border-gray-300"
+                }`}
+              >
+                {item}
+              </span>
+            ))}
+          </div>
         </div>
 
         <div className="text-white">
@@ -141,7 +139,7 @@ const LanguageTranslator = () => {
             ) : (
               <Hash className="w-5" />
             )}
-            Translate Text
+            Generate Caption
           </button>
         </div>
       </form>
@@ -150,7 +148,7 @@ const LanguageTranslator = () => {
       <div className="p-4 w-full min-h-96 max-w-lg bg-white rounded-lg border border-gray-300 flex flex-col max-h-[600px]">
         <h2 className="flex items-center text-xl font-semibold gap-3 text-slate-700">
           <Hash className="w-6 text-[#8E37EB]" />
-          Translated Text
+          Generated Caption
         </h2>
         {content ? (
           <div className="h-full mt-3 overflow-y-scroll text-sm text-slate-600">
@@ -162,7 +160,9 @@ const LanguageTranslator = () => {
           <div className="flex-1 flex justify-center items-center">
             <div className="text-sm flex flex-col items-center gap-5 text-gray-400">
               <Hash className="w-9 h-9" />
-              <p>Enter your text and click Translate Text ” to get started</p>
+              <p>
+                Enter your topic and click " Generate Caption ” to get started
+              </p>
             </div>
           </div>
         )}
@@ -171,4 +171,5 @@ const LanguageTranslator = () => {
   );
 };
 
-export default LanguageTranslator;
+export default SocialMediaCaption;
+

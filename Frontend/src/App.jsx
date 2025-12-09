@@ -15,6 +15,9 @@ import { useAuth } from "@clerk/clerk-react";
 import { useEffect } from "react";
 import {Toaster} from 'react-hot-toast';
 import SummarizeText from "./pages/SummarizeText.jsx";
+import LanguageTranslator from "./pages/LanguageTranslator.jsx";
+import SocialMediaCaption from "./pages/SocialMediaCaption.jsx";
+import EmailWriter from "./pages/EmailWriter.jsx";
 
 const pageTransition = {
   initial: { opacity: 0, y: 20 },
@@ -114,7 +117,7 @@ const App = () => {
             path="translate-text"
             element={
               <MotionWrapper>
-                <SummarizeText />
+                <LanguageTranslator />
               </MotionWrapper>
             }
           />
@@ -130,7 +133,7 @@ const App = () => {
             path="social-caption"
             element={
               <MotionWrapper>
-                <BlogTitles />
+                <SocialMediaCaption />
               </MotionWrapper>
             }
           />
@@ -138,7 +141,7 @@ const App = () => {
             path="generate-email"
             element={
               <MotionWrapper>
-                <BlogTitles />
+                <EmailWriter />
               </MotionWrapper>
             }
           />
