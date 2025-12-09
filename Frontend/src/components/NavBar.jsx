@@ -9,13 +9,14 @@ const NavBar = () => {
     const {user} = useUser();
     const {openSignIn} = useClerk();
   return (
-    <div className="fixed bg-gradient-to-b from-violet-400 z-5 backdrop:blur-2xl pt-5 px-8 sm:px-20 xl:px-32 flex items-center justify-between w-full">
-      <img
+    <div className="fixed bg-gradient-to-b from-violet-400 z-5 backdrop:blur-2xl pt-7 px-8 sm:px-20 xl:px-32 flex items-center justify-between w-full">
+      {/* <img
         onClick={() => navigate("/")}
         src={assets.logo}
         alt="logo"
         className="w-35 sm:w-45 cursor-pointer"
-      />
+      /> */}
+      <span className='text-3xl font-semibold text-indigo-700'>AI SaaS</span>
       {user ? (
         <UserButton />
       ) : (

@@ -14,7 +14,14 @@ const Layout = () => {
   return user ? (
     <div className="flex flex-col items-start justify-start h-screen">
       <nav className="w-full px-8 min-h-16 flex items-center justify-between border-b border-gray-200">
-        <img src={assets.logo} className='cursor-pointer w-32 sm:w-44' alt="" onClick={() => naviagte("/")} />
+        {/* <img src={assets.logo} className='cursor-pointer w-32 sm:w-44' alt="" onClick={() => naviagte("/")} /> */}
+        <span
+          onClick={() => naviagte("/")}
+          className="text-3xl font-semibold text-indigo-700 cursor-pointer"
+        >
+          AI SaaS
+        </span>
+
         {sideBar ? (
           <X
             onClick={() => setSideBar(false)}
@@ -35,7 +42,7 @@ const Layout = () => {
       </div>
     </div>
   ) : (
-    <div className='flex justify-center items-center h-screen'>
+    <div className="flex justify-center items-center h-screen">
       <SignIn />
     </div>
   );
