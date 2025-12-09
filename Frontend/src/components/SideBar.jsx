@@ -2,13 +2,19 @@ import React from "react";
 import { Protect, useClerk, useUser } from "@clerk/clerk-react";
 import {
   Eraser,
+  File,
   FileText,
   Hash,
   Home,
   Icon,
   Image,
+  Languages,
   LogOut,
+  Mail,
+  MessageCircle,
   Scissors,
+  ScrollText,
+  ShoppingBag,
   SquarePen,
   User,
   Users,
@@ -22,7 +28,26 @@ const navItems = [
   { to: "/ai/generate-images", label: "Generate Images", Icon: Image },
   { to: "/ai/remove-background", label: "Remove Background", Icon: Eraser },
   { to: "/ai/remove-object", label: "Remove Object", Icon: Scissors },
-  { to: "/ai/review-resume", label: "Review Resume", Icon: FileText },
+  { to: "/ai/review-resume", label: "Review Resume", Icon: File },
+  { to: "/ai/summarize-text", label: "Summarize Text", Icon: FileText },
+  { to: "/ai/translate-text", label: "Language Translator", Icon: Languages },
+
+  {
+    to: "/ai/blog-post-generator",
+    label: "Generate Blog Post",
+    Icon: ScrollText,
+  },
+  {
+    to: "/ai/social-caption",
+    label: "Social Media Caption",
+    Icon: MessageCircle,
+  },
+  { to: "/ai/generate-email", label: "Email Writer", Icon: Mail },
+  {
+    to: "/ai/product-description",
+    label: "Product Description",
+    Icon: ShoppingBag,
+  },
   { to: "/ai/community", label: "Community", Icon: Users },
 ];
 

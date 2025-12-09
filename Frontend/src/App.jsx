@@ -14,6 +14,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useAuth } from "@clerk/clerk-react";
 import { useEffect } from "react";
 import {Toaster} from 'react-hot-toast';
+import SummarizeText from "./pages/SummarizeText.jsx";
 
 const pageTransition = {
   initial: { opacity: 0, y: 20 },
@@ -39,7 +40,7 @@ const App = () => {
   
   return (
     <AnimatePresence mode="wait">
-      <Toaster/>
+      <Toaster />
       <Routes location={location} key={location.pathname}>
         {/* Home Page */}
         <Route
@@ -101,6 +102,55 @@ const App = () => {
               </MotionWrapper>
             }
           />
+          <Route
+            path="summarize-text"
+            element={
+              <MotionWrapper>
+                <SummarizeText />
+              </MotionWrapper>
+            }
+          />
+          <Route
+            path="translate-text"
+            element={
+              <MotionWrapper>
+                <SummarizeText />
+              </MotionWrapper>
+            }
+          />
+          <Route
+            path="blog-post-generator"
+            element={
+              <MotionWrapper>
+                <BlogTitles />
+              </MotionWrapper>
+            }
+          />
+          <Route
+            path="social-caption"
+            element={
+              <MotionWrapper>
+                <BlogTitles />
+              </MotionWrapper>
+            }
+          />
+          <Route
+            path="generate-email"
+            element={
+              <MotionWrapper>
+                <BlogTitles />
+              </MotionWrapper>
+            }
+          />
+          <Route
+            path="product-description"
+            element={
+              <MotionWrapper>
+                <BlogTitles />
+              </MotionWrapper>
+            }
+          />
+
           <Route
             path="community"
             element={

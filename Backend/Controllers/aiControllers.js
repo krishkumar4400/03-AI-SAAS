@@ -4,8 +4,9 @@ import sql from "../Config/connectDB.js";
 import { clerkClient } from "@clerk/express";
 import fs from "fs";
 import pdf from "pdf-parse/lib/pdf-parse.js";
-import axios from 'axios';
-import FormData from 'form-data';
+import axios from "axios";
+import FormData from "form-data";
+import { GoogleGenAI } from "@google/genai";
 
 const AI = new OpenAI({
   apiKey: process.env.GEMINI_API_KEY,
@@ -114,7 +115,6 @@ export const generateBlogTitle = async (req, res) => {
 };
 
 export const generateImage = async (req, res) => {
-
   try {
     const { userId } = req.auth(); // this auth will be added using the clerk middleware
     const { prompt, publish } = req.body;
@@ -134,7 +134,7 @@ export const generateImage = async (req, res) => {
       "https://clipdrop-api.co/text-to-image/v1",
       formData,
       {
-        headers: { "x-api-key": process.env.CLIP_DROP_API_KEY},
+        headers: { "x-api-key": process.env.CLIP_DROP_API_KEY },
         responseType: "arraybuffer",
       }
     );
@@ -145,7 +145,7 @@ export const generateImage = async (req, res) => {
     ).toString("base64")}`;
 
     const { secure_url } = await cloudinary.uploader.upload(base64Image, {
-      resource_type: "image"
+      resource_type: "image",
     });
 
     await sql`INSERT INTO creations (user_id, prompt, content, type, publish) VALUES(${userId}, ${prompt}, ${secure_url}, 'image', ${
@@ -197,7 +197,7 @@ export const removeImageBackground = async (req, res) => {
     });
   } catch (error) {
     res.json({
-      content: secure_url,
+      message: error.message,
       success: false,
     });
   }
@@ -232,7 +232,7 @@ export const removeImageObject = async (req, res) => {
     });
   } catch (error) {
     res.json({
-      content: secure_url,
+      message: error.message,
       success: false,
     });
   }
@@ -282,6 +282,81 @@ export const resumeReview = async (req, res) => {
   } catch (error) {
     res.json({
       content: error.message,
+      success: false,
+    });
+  }
+};
+
+export const summarizeText = async (req, res) => {
+  try {
+    const { userId } = req.auth();
+    const { input, type } = req.body;
+    const plan = req.plan;
+    if (!userId) {
+      return res.json({
+        message: "not authorized login again",
+        success: false,
+      });
+    }
+
+    if (!input) {
+      return res.json({
+        message: "please enter the text and try again",
+        success: false,
+      });
+    }
+
+    if (plan != "premium") {
+      return res.json({
+        message: "This feature is only available for premium subscriptions",
+        success: false,
+      });
+    }
+
+const prompt = `
+You are an expert summarizer. Summarize the following text in a ${type} format.
+
+Guidelines:
+- Short: 2–4 sentences
+- Medium: 6–10 sentences
+- Long: Produce a detailed summary of 2–4 paragraphs (200–400 words). 
+  Do NOT shorten aggressively. Expand key insights.
+- Bullets: 5–10 bullet points
+- Always preserve meaning and avoid adding fake information.
+
+Text:
+${input}
+
+Summary:
+`;
+
+
+    let maxToken = 200; //default
+    if (type.toLowerCase() === "short") maxToken = 80;
+    if (type.toLowerCase() === "medium") maxToken = 150;
+    if (type.toLowerCase() === "long") maxToken = 1300;
+    if (type.toLowerCase() === "bullets") maxToken = 200;
+
+    // The client gets the API key from the environment variable `GEMINI_API_KEY`.
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY2 });
+
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+    });
+    const content = response.text;
+
+    await sql`INSERT INTO creations (user_id, prompt, content, type) VALUES(${userId}, ${prompt}, ${content}, 'text-summarization')`;
+
+    return res.json({
+      content,
+      message: "summarized your text!.",
+      success: true,
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.json({
+      message: "try again",
       success: false,
     });
   }
