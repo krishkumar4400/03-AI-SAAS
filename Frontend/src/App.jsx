@@ -18,6 +18,7 @@ import SummarizeText from "./pages/SummarizeText.jsx";
 import LanguageTranslator from "./pages/LanguageTranslator.jsx";
 import SocialMediaCaption from "./pages/SocialMediaCaption.jsx";
 import EmailWriter from "./pages/EmailWriter.jsx";
+import ProductDescription from "./pages/ProductDescription.jsx";
 
 const pageTransition = {
   initial: { opacity: 0, y: 20 },
@@ -149,7 +150,7 @@ const App = () => {
             path="product-description"
             element={
               <MotionWrapper>
-                <BlogTitles />
+                <ProductDescription />
               </MotionWrapper>
             }
           />

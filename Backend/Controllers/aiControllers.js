@@ -646,3 +646,90 @@ Email:
     });
   }
 };
+
+export const generateProductDescription = async (req, res) => {
+  try {
+    const { userId } = req.auth();
+    const { productName, features, tone, targetAudience, platformStyle } =
+      req.body;
+    const plan = req.plan;
+
+    if (!userId) {
+      return res.json({
+        message: "not authorized login again",
+        success: false,
+      });
+    }
+
+    if ((!productName || !features || !tone || !targetAudience || !platformStyle)) {
+      return res.json({
+        message: "Missing details",
+        success: false,
+      });
+    }
+
+
+    if (plan != "premium") {
+      return res.json({
+        message: "This feature is only available for premium subscriptions",
+        success: false,
+      });
+    }
+
+    const prompt = `
+You are a professional eCommerce copywriter.
+
+Write a high-converting product description using the details below:
+
+Product Name: ${productName}
+Key Features: ${features}
+Tone: ${tone}
+Target Audience: ${targetAudience}
+Style: ${platformStyle} (amazon | shopify | flipkart | website)
+
+Output Format:
+1. SEO Product Title  
+2. 5 Bullet Points highlighting benefits (NOT features)  
+3. A detailed long description (80–150 words)  
+4. A short CTA (Call-to-Action)
+
+Rules:
+- Focus on benefits, not just technical features.
+- Keep the tone consistent with user input.
+- Do NOT add explanations.
+- Provide clean, readable formatting.
+
+Product Description:
+
+
+
+`;
+
+    // The client gets the API key from the environment variable `GEMINI_API_KEY`.
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY2 });
+
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+      generationConfig: {
+        temperature: 0.4,
+        maxOutputTokens: 500,
+      },
+    });
+    const description = response.text;
+
+    await sql`INSERT INTO creations (user_id, prompt, content, type) VALUES(${userId}, ${prompt}, ${description}, 'product-description')`;
+
+    return res.json({
+      productDescription: description,
+      message: "Product description generated successfully!",
+      success: true,
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.json({
+      message: "try again later",
+      success: false,
+    });
+  }
+};
