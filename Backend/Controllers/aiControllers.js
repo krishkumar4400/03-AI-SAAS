@@ -733,3 +733,151 @@ Product Description:
     });
   }
 };
+
+export const generateBlog = async (req, res) => {
+  try {
+    const { userId } = req.auth; // FIXED
+    const { title } = req.body;
+    const plan = req.plan;
+
+    if (!userId) {
+      return res.json({ message: "Not authorized", success: false });
+    }
+
+    if (!title) {
+      return res.json({
+        message: "Title is required",
+        success: false,
+      });
+    }
+
+    if (plan !== "premium") {
+      return res.json({
+        success: false,
+        message: "This feature is only for premium users",
+      });
+    }
+
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY2 });
+
+    const blog = {
+      title,
+      subTitle: "",
+      description: "",
+      image: "",
+      category: "",
+    };
+
+    // --------------------------
+    // 1) Generate Subtitle
+    // --------------------------
+    const subtitlePrompt = `
+Generate a compelling blog subtitle for the topic: "${title}". 
+Use a clean, engaging writing style.
+Do NOT include extra text. ONLY provide the subtitle.
+`;
+
+    const subtitleResponse = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: subtitlePrompt,
+      generationConfig: { maxOutputTokens: 100 },
+    });
+
+    blog.subTitle = subtitleResponse.text.trim();
+
+    // --------------------------
+    // 2) Generate Full Blog Content
+    // --------------------------
+    const descriptionPrompt = `
+Write a complete, well-structured blog article for the topic: "${title}".
+
+Requirements:
+- Simple language
+- 600–900 words
+- SEO-friendly
+- Human-like writing
+- No bullet points unless necessary
+
+Only return the article content.
+`;
+
+    const descriptionResponse = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: descriptionPrompt,
+      generationConfig: { maxOutputTokens: 1200 },
+    });
+
+    blog.description = descriptionResponse.text.trim();
+
+    // --------------------------
+    // 3) Generate Category
+    // --------------------------
+    const categoryPrompt = `
+Based on this blog topic "${title}", return ONLY ONE category from:
+
+["Technology", "AI", "Programming", "Health", "Education", "Finance", "Lifestyle", "Business", "Productivity"]
+
+If none match, choose the closest category.
+Return only the category.
+`;
+
+    const categoryResponse = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: categoryPrompt,
+      generationConfig: { maxOutputTokens: 20 },
+    });
+
+    blog.category = categoryResponse.text.replace(/"/g, "").trim();
+
+    // --------------------------
+    // 4) Generate Thumbnail Image
+    // --------------------------
+
+    const imagePrompt = `Generate a creative thumbnail image idea for blog title: ${title}. Flat modern illustration.`;
+
+    const formData = new FormData();
+    formData.append("prompt", imagePrompt);
+
+    const { data } = await axios.post(
+      "https://clipdrop-api.co/text-to-image/v1",
+      formData,
+      {
+        headers: { "x-api-key": process.env.CLIP_DROP_API_KEY },
+        responseType: "arraybuffer",
+      }
+    );
+
+    const base64Image = `data:image/png;base64,${Buffer.from(
+      data,
+      "binary"
+    ).toString("base64")}`;
+
+    const { secure_url } = await cloudinary.uploader.upload(base64Image, {
+      resource_type: "image",
+    });
+
+    blog.image = secure_url;
+
+    // --------------------------
+    // 5) Save to DB (FIXED JSON)
+    // --------------------------
+    await sql`
+      INSERT INTO creations (user_id, prompt, content, type)
+      VALUES (
+        ${userId},
+        ${"Generate a blog for " + title},
+        ${JSON.stringify(blog)},
+        'blog-generation'
+      )
+    `;
+
+    return res.json({
+      success: true,
+      message: "Blog generated successfully!",
+      blog,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.json({ success: false, message: "Try again later" });
+  }
+};

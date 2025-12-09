@@ -19,6 +19,7 @@ import LanguageTranslator from "./pages/LanguageTranslator.jsx";
 import SocialMediaCaption from "./pages/SocialMediaCaption.jsx";
 import EmailWriter from "./pages/EmailWriter.jsx";
 import ProductDescription from "./pages/ProductDescription.jsx";
+import GenerateBlog from "./pages/GenerateBlog.jsx";
 
 const pageTransition = {
   initial: { opacity: 0, y: 20 },
@@ -123,10 +124,10 @@ const App = () => {
             }
           />
           <Route
-            path="blog-post-generator"
+            path="generate-blog"
             element={
               <MotionWrapper>
-                <BlogTitles />
+                <GenerateBlog />
               </MotionWrapper>
             }
           />

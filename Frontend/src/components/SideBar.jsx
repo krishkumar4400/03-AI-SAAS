@@ -33,7 +33,7 @@ const navItems = [
   { to: "/ai/translate-text", label: "Language Translator", Icon: Languages },
 
   {
-    to: "/ai/blog-post-generator",
+    to: "/ai/generate-blog",
     label: "Generate Blog Post",
     Icon: ScrollText,
   },
