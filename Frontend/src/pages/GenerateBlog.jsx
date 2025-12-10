@@ -89,7 +89,7 @@ const GenerateBlog = () => {
   const savePostedBlog = async () => {
     try {
       await axios.post(
-        "https://ai-saas-backend-8ycf.onrender.com/api/ai/post/save-post",
+        "https://ai-saas-backend-8ycf.onrender.com/api/post/save-post",
         { content, title },
         {
           headers: {

@@ -28,7 +28,7 @@ app.get('/', (req,res) => {
     res.send("hello express"); 
 });
 
-app.use("/api/ai/post", blogRouter);
+app.use("/api/post", blogRouter);
 app.use(clerkMiddleware());
 
 // protected routes
