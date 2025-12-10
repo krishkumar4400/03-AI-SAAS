@@ -89,11 +89,12 @@ const GenerateBlog = () => {
   const savePostedBlog = async () => {
     try {
       await axios.post(
-        import.meta.env.VITE_BASE_URL_LIVE + "/api/ai/post/save-post",
-        { content, title }, {
+        "https://ai-saas-backend-8ycf.onrender.com/api/ai/post/save-post",
+        { content, title },
+        {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
