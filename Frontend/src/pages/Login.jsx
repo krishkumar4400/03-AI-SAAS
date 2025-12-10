@@ -11,7 +11,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        import.meta.env.VITE_BASE_URL_LIVE + "/api/ai/post/authorize-post",
+        "https://ai-saas-backend-8ycf.onrender.com/api/ai/post/authorize-post",
         {
           email,
           password,
