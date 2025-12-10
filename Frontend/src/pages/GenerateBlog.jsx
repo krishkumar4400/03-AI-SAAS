@@ -12,34 +12,34 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import Markdown from "react-markdown";
 import { useAuth } from "@clerk/clerk-react";
+import { useAppContext } from "../context/AppContext";
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
 const GenerateBlog = () => {
-
   const [title, setTitle] = useState("");
   const [isPublished, setIsPublished] = useState("");
   const [adding, isAdding] = useState(false);
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
+  const [blogURL, setBlogURL] = useState("");
   const { getToken } = useAuth();
+  const {token, navigate} = useAppContext();
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
     try {
-        
-            if (!title) {
-              return toast.error("Please enter a title");
-            }  
+      if (!title) {
+        return toast.error("Please enter a title");
+      }
 
       setLoading(true);
-
 
       const { data } = await axios.post(
         "/api/ai/generate-blog",
         {
-          title
+          title,
         },
         {
           headers: {
@@ -58,6 +58,48 @@ const GenerateBlog = () => {
       toast.error(error.message);
     }
     setLoading(false);
+  };
+
+  const publishBlogHandler = async () => {
+    try {
+      setIsPublished(true);
+      const { data } = await axios.post(
+        import.meta.env.VITE_BACKEND_URL + "/api/blog/post-blog",
+        {
+          title,
+          subTitle: content.subTitle,
+          description: content.description,
+          image: content.image,
+          category: content.category,
+          isPublished: true,
+        }
+      );
+      if (data.success) {
+        toast.success(data.message);
+        setBlogURL(data.blogURL);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.log(error.message);
+      toast.error(error.message);
+    }
+  };
+
+  const savePostedBlog = async () => {
+    try {
+      await axios.post(
+        import.meta.env.VITE_BASE_URL_LIVE + "/api/ai/post/save-post",
+        { content, title }, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   return (
@@ -100,7 +142,7 @@ const GenerateBlog = () => {
       </form>
 
       {/* Right column */}
-      <div className="p-4 w-full min-h-96 max-w-lg bg-white rounded-lg border border-gray-300 flex flex-col max-h-[600px]">
+      <div className="p-4 relative w-full min-h-96 max-w-lg bg-white rounded-lg border border-gray-300 flex flex-col max-h-[600px]">
         <h2 className="flex items-center text-xl font-semibold gap-3 text-slate-700">
           <Hash className="w-6 text-[#8E37EB]" />
           Generated Blog
@@ -108,10 +150,14 @@ const GenerateBlog = () => {
         {content ? (
           <div className="h-full mt-3 overflow-y-scroll text-sm text-slate-600">
             <div className="max-w-sm mx-auto">
-              <img src={content.image} className="w-full h-full" alt="" />
+              <img src={content.image} className="w-full h-auto rounded-lg" />
             </div>
-            <h2 className="text-2xl font-semibold text-slate-800 py-2">{title}</h2>
-            <h3 className="text-lg font-semibold text-gray-700 pb-2">{content.subTitle}</h3>
+            <h2 className="text-2xl font-semibold text-slate-800 py-2">
+              {title}
+            </h2>
+            <h3 className="text-lg font-semibold text-gray-700 pb-2">
+              {content.subTitle}
+            </h3>
             <div className="reset-tw">
               <Markdown>{content.description}</Markdown>
             </div>
@@ -127,6 +173,26 @@ const GenerateBlog = () => {
             </div>
           </div>
         )}
+
+        <div className="absolute bottom-2 right-2">
+          <button
+            onClick={async () => {
+              if (token) {
+                await publishBlogHandler();
+                await savePostedBlog();
+              } else {
+                navigate("/post/login");
+              }
+            }}
+            className="rounded border-0 bg-green-600 px-4 py-2 font-medium hover:scale-105 active:scale-95 duration-150 text-white"
+          >
+            Publish
+          </button>
+        </div>
+        <div>
+          <p></p>
+          <p></p>
+        </div>
       </div>
     </div>
   );

@@ -20,6 +20,7 @@ import SocialMediaCaption from "./pages/SocialMediaCaption.jsx";
 import EmailWriter from "./pages/EmailWriter.jsx";
 import ProductDescription from "./pages/ProductDescription.jsx";
 import GenerateBlog from "./pages/GenerateBlog.jsx";
+import Login from "./pages/Login.jsx";
 
 const pageTransition = {
   initial: { opacity: 0, y: 20 },
@@ -53,6 +54,14 @@ const App = () => {
           element={
             <MotionWrapper>
               <Home />
+            </MotionWrapper>
+          }
+        />
+        <Route
+          path="/post/login"
+          element={
+            <MotionWrapper>
+              <Login />
             </MotionWrapper>
           }
         />

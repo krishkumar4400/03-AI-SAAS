@@ -7,6 +7,8 @@ import pdf from "pdf-parse/lib/pdf-parse.js";
 import axios from "axios";
 import FormData from "form-data";
 import { GoogleGenAI } from "@google/genai";
+import jwt from "jsonwebtoken";
+import Blog from "../Model/Blog.js";
 
 const AI = new OpenAI({
   apiKey: process.env.GEMINI_API_KEY,
@@ -661,13 +663,18 @@ export const generateProductDescription = async (req, res) => {
       });
     }
 
-    if ((!productName || !features || !tone || !targetAudience || !platformStyle)) {
+    if (
+      !productName ||
+      !features ||
+      !tone ||
+      !targetAudience ||
+      !platformStyle
+    ) {
       return res.json({
         message: "Missing details",
         success: false,
       });
     }
-
 
     if (plan != "premium") {
       return res.json({
@@ -879,5 +886,57 @@ Return only the category.
   } catch (error) {
     console.log(error);
     return res.json({ success: false, message: "Try again later" });
+  }
+};
+
+export const authorizePostBlog = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.json({
+        message: "Missing details",
+        success: false,
+      });
+    }
+
+    if (
+      email !== process.env.ADMIN_EMAIL ||
+      password !== process.env.ADMIN_PASSWORD
+    ) {
+      return res.json({
+        message: "incorrect email id or password",
+        success: false,
+      });
+    }
+    const token = jwt.sign({ email }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    if (token) {
+      res.json({
+        token,
+        message: "you are logged in",
+        success: true,
+      });
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+export const savePostedBlog = async (req, res) => {
+  try {
+    const { subTitle, description, category, image } = req.body.content;
+    const { title } = req.body;
+
+    await Blog.create({
+      title,
+      subTitle,
+      description,
+      category,
+      image,
+    });
+  } catch (error) {
+    console.log(error.message);
   }
 };

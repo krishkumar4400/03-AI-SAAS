@@ -41,7 +41,7 @@ const LanguageTranslator = () => {
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
   const [targetLanguage, setTargetLanguage] = useState("hindi");
-  const [tone, setTone] = useState('');
+  const [tone, setTone] = useState('formal');
   const { getToken } = useAuth();
 
   const onSubmitHandler = async (e) => {

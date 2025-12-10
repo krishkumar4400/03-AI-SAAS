@@ -1,4 +1,5 @@
 import { clerkClient } from "@clerk/express";
+import jwt from 'jsonwebtoken';
 
 export const auth = async (req, res, next) => {
   try {
@@ -40,3 +41,25 @@ export const auth = async (req, res, next) => {
     });
   }
 };
+
+export const postBlog = async(req,res,next) => {
+  try {
+    const token = req.headers.authorization;
+    if(!token) {
+      return res.json({
+        message: "No token provided",
+        success: false 
+      });
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET);
+    next();
+
+  } catch (error) {
+    console.log(error.message);
+    return res.json({
+      message: "Not authorized Login again",
+      success: false 
+    });
+  }
+}
