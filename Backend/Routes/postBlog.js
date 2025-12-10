@@ -5,6 +5,6 @@ import { authorizePostBlog, savePostedBlog } from "../Controllers/aiControllers.
 const blogRouter = Router();
 
 blogRouter.post('/authorize-post', authorizePostBlog);
-blogRouter.post('/post-blog', postBlog, savePostedBlog);
+blogRouter.post("/save-post", postBlog, savePostedBlog);
 
 export default blogRouter;
