@@ -64,7 +64,7 @@ const GenerateBlog = () => {
     try {
       setIsPublished(true);
       const { data } = await axios.post(
-        import.meta.env.VITE_BACKEND_URL + "/api/blog/post-blog",
+        "https://blog-app-backend-xked.onrender.com/api/blog/post-blog",
         {
           title,
           subTitle: content.subTitle,

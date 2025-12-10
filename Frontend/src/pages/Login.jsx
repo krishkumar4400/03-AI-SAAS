@@ -4,10 +4,12 @@ import { useAppContext } from "../context/AppContext";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const { axios, setToken } = useAppContext();
+  const { axios, setToken, token } = useAppContext();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // console.log(token)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,7 +21,7 @@ const Login = () => {
           password,
         }
       );
-
+      
       if (data.success) {
         toast.success(data.message);
         navigate('/ai/generate-blog')
