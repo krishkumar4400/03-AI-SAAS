@@ -28,10 +28,10 @@ app.get('/', (req,res) => {
     res.send("hello express"); 
 });
 
+app.use("/api/ai/post", blogRouter);
 app.use(clerkMiddleware());
 
 // protected routes
-app.use("/api/ai/post", blogRouter);
 app.use(requireAuth());
 
 app.use("/api/ai", auth, aiRouter);
