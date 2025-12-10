@@ -107,19 +107,15 @@ const GenerateBlog = () => {
         </h2>
         {content ? (
           <div className="h-full mt-3 overflow-y-scroll text-sm text-slate-600">
-            <img src={content.thumbnail} alt="" />
-            <h2>
-                {title}
-            </h2>
-            <h3>
-                {content.subTitle}
-            </h3>
+            <div className="max-w-sm mx-auto">
+              <img src={content.image} className="w-full h-full" alt="" />
+            </div>
+            <h2 className="text-2xl font-semibold text-slate-800 py-2">{title}</h2>
+            <h3 className="text-lg font-semibold text-gray-700 pb-2">{content.subTitle}</h3>
             <div className="reset-tw">
               <Markdown>{content.description}</Markdown>
             </div>
-            <p>
-                {content.category}
-            </p>
+            <p className="text-sm text-gray-600 py-3">{content.category}</p>
           </div>
         ) : (
           <div className="flex-1 flex justify-center items-center">

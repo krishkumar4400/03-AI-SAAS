@@ -736,7 +736,7 @@ Product Description:
 
 export const generateBlog = async (req, res) => {
   try {
-    const { userId } = req.auth; // FIXED
+    const { userId } = req.auth();
     const { title } = req.body;
     const plan = req.plan;
 
