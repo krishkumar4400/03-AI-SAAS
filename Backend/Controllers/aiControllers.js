@@ -10,10 +10,23 @@ import { GoogleGenAI } from "@google/genai";
 import jwt from "jsonwebtoken";
 import Blog from "../Model/Blog.js";
 
-const AI = new OpenAI({
-  apiKey: process.env.GEMINI_API_KEY,
-  baseURL: "https://generativelanguage.googleapis.com/v1beta/openai",
-});
+// const AI = new OpenAI({
+//   apiKey: process.env.GEMINI_API_KEY,
+//   baseURL: "https://generativelanguage.googleapis.com/v1beta/openai",
+// });
+
+
+// The client gets the API key from the environment variable `GEMINI_API_KEY`.
+const ai = new GoogleGenAI({apiKey: process.env.GEMINI_API_KEY});
+
+async function main(prompt) {
+  const response = await ai.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: prompt,
+  });
+  return response.text;
+}
+
 
 export const generateArticle = async (req, res) => {
   try {
@@ -29,18 +42,20 @@ export const generateArticle = async (req, res) => {
       });
     }
 
-    const response = await AI.chat.completions.create({
-      model: "gemini-2.0-flash",
-      messages: [
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      temperature: 0.7,
-      max_tokens: length,
-    });
-    const content = response.choices[0].message.content;
+    // const response = await AI.chat.completions.create({
+    //   model: "gemini-2.0-flash",
+    //   messages: [
+    //     {
+    //       role: "user",
+    //       content: prompt,
+    //     },
+    //   ],
+    //   temperature: 0.7,
+    //   max_tokens: length,
+    // });
+    // const content = response.choices[0].message.content;
+    const content = await main(prompt);
+    // console.log(content);
 
     await sql`INSERT INTO creations (user_id, prompt, content, type) VALUES(${userId}, ${prompt}, ${content}, 'article')`;
 
@@ -58,13 +73,15 @@ export const generateArticle = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    console.error(error.message);
-    res.json({
-      message: error.message,
+    console.error("Gemini Error:", error?.response?.data || error);
+    res.status(429).json({
+      message: "Too many requests. Please wait a moment and try again.",
       success: false,
     });
   }
 };
+
+// 429 status code (no body).....................
 
 export const generateBlogTitle = async (req, res) => {
   try {
@@ -80,18 +97,19 @@ export const generateBlogTitle = async (req, res) => {
       });
     }
 
-    const response = await AI.chat.completions.create({
-      model: "gemini-2.0-flash",
-      messages: [
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      temperature: 0.7,
-      max_tokens: 100,
-    });
-    const content = response.choices[0].message.content;
+    // const response = await AI.chat.completions.create({
+    //   model: "gemini-2.0-flash",
+    //   messages: [
+    //     {
+    //       role: "user",
+    //       content: prompt,
+    //     },
+    //   ],
+    //   temperature: 0.7,
+    //   max_tokens: 100,
+    // });
+    // const content = response.choices[0].message.content;
+    const content = await main(prompt);
 
     await sql`INSERT INTO creations (user_id, prompt, content, type) VALUES(${userId}, ${prompt}, ${content}, 'blog-title')`;
 
@@ -265,14 +283,15 @@ export const resumeReview = async (req, res) => {
 
     const prompt = `Review the following resume and provide constructive feedback on its strengths, weeknesses, and areas for improvment. Resume Content:\n\n${pdfData.text}`;
 
-    const response = await AI.chat.completions.create({
-      model: "gemini-2.0-flash",
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0,
-      max_tokens: 1000,
-    });
+    // const response = await AI.chat.completions.create({
+    //   model: "gemini-2.0-flash",
+    //   messages: [{ role: "user", content: prompt }],
+    //   temperature: 0,
+    //   max_tokens: 1000,
+    // });
 
-    const content = response.choices[0].message.content;
+    // const content = response.choices[0].message.content;
+    const content = await main(prompt);
 
     await sql`INSERT INTO creations (user_id, prompt, content, type) VALUES(${userId}, ${"Review the uploaded resume"}, ${content}, 'resume-review')`;
 
