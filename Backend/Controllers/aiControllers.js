@@ -352,7 +352,7 @@ ${input}
 Summary:
 `;
 
-    let maxOutputTokens = 200; //default
+    let maxToken = 200; //default
     if (type.toLowerCase() === "short") maxToken = 80;
     if (type.toLowerCase() === "medium") maxToken = 150;
     if (type.toLowerCase() === "long") maxToken = 1300;
@@ -365,7 +365,7 @@ Summary:
       model: "gemini-2.5-flash",
       contents: prompt,
       generationConfig: {
-        maxOutputTokens,
+        maxOutputTokens: maxToken,
         temperature: 0,
       },
     });
