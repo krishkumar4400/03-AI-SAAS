@@ -127,6 +127,7 @@ export const generateBlogTitle = async (req, res) => {
       success: true,
     });
   } catch (error) {
+    console.log(error.message);
     res.json({
       message: error.message,
       success: false,
