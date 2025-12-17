@@ -15,9 +15,8 @@ import Blog from "../Model/Blog.js";
 //   baseURL: "https://generativelanguage.googleapis.com/v1beta/openai",
 // });
 
-
 // The client gets the API key from the environment variable `GEMINI_API_KEY`.
-const ai = new GoogleGenAI({apiKey: process.env.GEMINI_API_KEY});
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 async function main(prompt) {
   const response = await ai.models.generateContent({
@@ -26,7 +25,6 @@ async function main(prompt) {
   });
   return response.text;
 }
-
 
 export const generateArticle = async (req, res) => {
   try {
@@ -265,6 +263,13 @@ export const resumeReview = async (req, res) => {
     const resume = req.file;
     const plan = req.plan;
 
+    if(!resume) {
+      return res.json({
+        message: "Please upload a resume",
+        success: false 
+      });
+    }
+
     if (plan != "premium") {
       return res.json({
         message: "This feature is only available for premium subscriptions",
@@ -302,8 +307,8 @@ export const resumeReview = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    res.json({
-      content: error.message,
+    return res.json({
+      message: error.message,
       success: false,
     });
   }
