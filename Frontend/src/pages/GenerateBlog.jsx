@@ -176,7 +176,7 @@ const GenerateBlog = () => {
         )}
 
         <div className="absolute bottom-2 right-2">
-          <button
+{ content &&          <button
             onClick={async () => {
               if (token) {
                 await publishBlogHandler();
@@ -188,7 +188,7 @@ const GenerateBlog = () => {
             className="rounded border-0 bg-green-600 px-4 py-2 font-medium hover:scale-105 active:scale-95 duration-150 text-white"
           >
             Publish
-          </button>
+          </button>}
         </div>
         <div>
           <p></p>
