@@ -1,10 +1,8 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom';
-import { assets } from '../assets/assets.js';
+import { useNavigate } from "react-router-dom";
+import { assets } from "../assets/assets.js";
 
 const Hero = () => {
-
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   return (
     <div className="bg-[url(/gradientBackground.png)] bg-cover bg-center bg-no-repea px-4  sm:px-20 xl:px-32 relative inline-flex flex-col w-full justify-center min-h-screen">
       <div className="text-center mb-6">
@@ -19,7 +17,7 @@ const Hero = () => {
       </div>
       <div className="flex flex-wrap text-sm max-sm:text-xs gap-4 items-center justify-center">
         <button
-          onClick={() => navigate('/ai')}
+          onClick={() => navigate("/ai")}
           className="bg-primary rounded-lg text-white px-10 py-3 hover:scale-102 active:scale-95 transition cursor-pointer active:shadow-lime-400 shadow-sm hover:shadow-fuchsia-300"
         >
           Start creating now
@@ -28,12 +26,12 @@ const Hero = () => {
           Watch demo
         </button>
       </div>
-      <div className='flex items-center gap-4  mx-auto mt-8 text-gray-600'>
-        <img src={assets.user_group} className='h-8' alt="user_group" /> Trusted by 100k+ people
+      <div className="flex items-center gap-4  mx-auto mt-8 text-gray-600">
+        <img src={assets.user_group} className="h-8" alt="user_group" /> Trusted
+        by 100k+ people
       </div>
-      
     </div>
   );
-}
+};
 
-export default Hero
+export default Hero;

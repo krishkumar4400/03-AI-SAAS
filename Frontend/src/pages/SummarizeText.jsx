@@ -1,13 +1,5 @@
-import {
-  AreaChartIcon,
-  Edit,
-  Hash,
-  Pen,
-  Sparkles,
-  Square,
-  SquarePen,
-} from "lucide-react";
-import React, { useState } from "react";
+import { Hash, Sparkles } from "lucide-react";
+import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Markdown from "react-markdown";
@@ -16,8 +8,7 @@ import { useAuth } from "@clerk/clerk-react";
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
 const SummarizeText = () => {
-
-    const summaryType = ["Short", "Medium", "Long", "bullets"];
+  const summaryType = ["Short", "Medium", "Long", "bullets"];
 
   const [input, setInput] = useState("");
   const [content, setContent] = useState("");
@@ -34,13 +25,14 @@ const SummarizeText = () => {
       const { data } = await axios.post(
         "/api/ai/summarize-text",
         {
-          input, type
+          input,
+          type,
         },
         {
           headers: {
             Authorization: `Bearer ${await getToken()}`,
           },
-        }
+        },
       );
 
       if (data.success) {

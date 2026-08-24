@@ -1,7 +1,5 @@
-import React from 'react'
 import { AiToolsData } from '../assets/assets';
 import { useNavigate } from 'react-router-dom';
-import { LucideSquarePen } from 'lucide-react';
 import { useUser } from '@clerk/clerk-react';
 
 const AiTools = () => {

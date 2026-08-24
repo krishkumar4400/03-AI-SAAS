@@ -1,13 +1,5 @@
-import {
-  AreaChartIcon,
-  Edit,
-  Hash,
-  Pen,
-  Sparkles,
-  Square,
-  SquarePen,
-} from "lucide-react";
-import React, { useState } from "react";
+import { Hash, Sparkles } from "lucide-react";
+import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Markdown from "react-markdown";
@@ -19,7 +11,6 @@ const LanguageTranslator = () => {
   const languages = [
     "English",
     "Hindi",
-    "Bhojpuri",
     "Gujarati",
     "Spanish",
     "French",
@@ -34,14 +25,13 @@ const LanguageTranslator = () => {
     "Dutch",
     "Turkish",
   ];
-;
   const tones = ["Formal", "Casual"];
 
   const [input, setInput] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
   const [targetLanguage, setTargetLanguage] = useState("hindi");
-  const [tone, setTone] = useState('formal');
+  const [tone, setTone] = useState("formal");
   const { getToken } = useAuth();
 
   const onSubmitHandler = async (e) => {
@@ -55,13 +45,13 @@ const LanguageTranslator = () => {
         {
           input,
           targetLanguage,
-          tone
+          tone,
         },
         {
           headers: {
             Authorization: `Bearer ${await getToken()}`,
           },
-        }
+        },
       );
 
       if (data.success) {

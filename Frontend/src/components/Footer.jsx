@@ -1,5 +1,3 @@
-import { assets } from "../assets/assets.js";
-
 const Footer = () => {
   return (
     <footer className="px-6 mt-12 pt-8 md:px-16 lg:px-36 w-full text-slate-700 bg-white border-t border-gray-300">

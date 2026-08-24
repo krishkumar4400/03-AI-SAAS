@@ -1,15 +1,5 @@
-import {
-  AreaChartIcon,
-  Check,
-  Copy,
-  Edit,
-  Hash,
-  Pen,
-  Sparkles,
-  Square,
-  SquarePen,
-} from "lucide-react";
-import React, { useState } from "react";
+import { Check, Copy, Hash, Sparkles } from "lucide-react";
+import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Markdown from "react-markdown";
@@ -64,7 +54,7 @@ const ProductDescription = () => {
           headers: {
             Authorization: `Bearer ${await getToken()}`,
           },
-        }
+        },
       );
 
       if (data.success) {

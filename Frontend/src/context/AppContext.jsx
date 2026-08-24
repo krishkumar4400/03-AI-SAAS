@@ -1,9 +1,7 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
-
-const AppContext = createContext();
+import { AppContext } from "./AppProvider.jsx";
 
 export const AppProvider = ({ children }) => {
   const navigate = useNavigate();
@@ -24,8 +22,4 @@ export const AppProvider = ({ children }) => {
   }, []);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
-};
-
-export const useAppContext = () => {
-  return useContext(AppContext);
 };

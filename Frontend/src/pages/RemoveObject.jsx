@@ -1,7 +1,7 @@
 import { useAuth } from "@clerk/clerk-react";
 import axios from "axios";
-import { Download, DownloadIcon, Scissors, SkipBack, SkipForward, Sparkles } from "lucide-react";
-import React, { useState } from "react";
+import { DownloadIcon, Scissors, SkipForward, Sparkles } from "lucide-react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
@@ -38,7 +38,7 @@ const BlogTitles = () => {
           headers: {
             Authorization: `Bearer ${await getToken()}`,
           },
-        }
+        },
       );
 
       if (data.success) {
@@ -53,16 +53,15 @@ const BlogTitles = () => {
     }
     setLoading(false);
   };
-const downloadImage = () => {
-  if (!content) return;
-  const link = document.createElement("a");
-  link.href = content;
-  link.download = "processed-image.png"; // file name
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
-
+  const downloadImage = () => {
+    if (!content) return;
+    const link = document.createElement("a");
+    link.href = content;
+    link.download = "processed-image.png"; // file name
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <div className="h-full overflow-y-scroll p-6 flex items-start flex-wrap gap-4 text-slate-800">
@@ -135,7 +134,6 @@ const downloadImage = () => {
                   Clear
                 </span>
                 <span
-                
                   onClick={downloadImage}
                   className=" flex items-center justify-center gap-2 text-white w-1/2 text-center bg-blue-500 py-1.5 rounded-lg my-2 cursor-pointer"
                 >

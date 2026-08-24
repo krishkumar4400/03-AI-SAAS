@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { Heart } from "lucide-react";
-import { motion } from "framer-motion";
 import axios from "axios";
 import toast from "react-hot-toast";
 
@@ -41,7 +40,7 @@ const Community = () => {
           headers: {
             Authorization: `Bearer ${await getToken()}`,
           },
-        }
+        },
       );
       if (data.success) {
         toast.success(data.message);
@@ -61,7 +60,7 @@ const Community = () => {
     }
   }, [user]);
 
-  return !loading ?  (
+  return !loading ? (
     <motion.div
       key={creations.id}
       initial={{ opacity: 0, scale: 0.95 }}
@@ -102,9 +101,11 @@ const Community = () => {
         </div>
       </div>
     </motion.div>
-  ) : <div className="flex justify-center items-center h-full">
-    <span className="w-10 h-10 my-1 border-3 border-primary border-t-transparent rounded-full animate-spin"></span>
-  </div>
+  ) : (
+    <div className="flex justify-center items-center h-full">
+      <span className="w-10 h-10 my-1 border-3 border-primary border-t-transparent rounded-full animate-spin"></span>
+    </div>
+  );
 };
 
 export default Community;

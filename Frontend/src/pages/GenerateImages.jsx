@@ -1,8 +1,7 @@
-import { DownloadIcon, Image, Pen, SkipForward, Sparkles } from "lucide-react";
-import React, { useState } from "react";
+import { DownloadIcon, Image, SkipForward, Sparkles } from "lucide-react";
+import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import Markdown from "react-markdown";
 import { useAuth } from "@clerk/clerk-react";
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
@@ -46,7 +45,7 @@ const GenerateImages = () => {
           headers: {
             Authorization: `Bearer ${await getToken()}`,
           },
-        }
+        },
       );
 
       if (data.success) {

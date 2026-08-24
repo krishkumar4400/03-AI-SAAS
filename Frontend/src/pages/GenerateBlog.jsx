@@ -1,13 +1,5 @@
-import {
-  AreaChartIcon,
-  Edit,
-  Hash,
-  Pen,
-  Sparkles,
-  Square,
-  SquarePen,
-} from "lucide-react";
-import React, { useState } from "react";
+import { Hash, Sparkles } from "lucide-react";
+import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Markdown from "react-markdown";
@@ -24,7 +16,7 @@ const GenerateBlog = () => {
   const [loading, setLoading] = useState(false);
   const [blogURL, setBlogURL] = useState("");
   const { getToken } = useAuth();
-  const {token, navigate} = useAppContext();
+  const { token, navigate } = useAppContext();
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -45,7 +37,7 @@ const GenerateBlog = () => {
           headers: {
             Authorization: `Bearer ${await getToken()}`,
           },
-        }
+        },
       );
 
       if (data.success) {
@@ -72,7 +64,7 @@ const GenerateBlog = () => {
           image: content.image,
           category: content.category,
           isPublished: true,
-        }
+        },
       );
       if (data.success) {
         toast.success(data.message);
@@ -95,9 +87,8 @@ const GenerateBlog = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
-
     } catch (error) {
       console.log(error.message);
     }
@@ -176,19 +167,21 @@ const GenerateBlog = () => {
         )}
 
         <div className="absolute bottom-2 right-2">
-{ content &&          <button
-            onClick={async () => {
-              if (token) {
-                await publishBlogHandler();
-                await savePostedBlog();
-              } else {
-                navigate("/post/login");
-              }
-            }}
-            className="rounded border-0 bg-green-600 px-4 py-2 font-medium hover:scale-105 active:scale-95 duration-150 text-white"
-          >
-            Publish
-          </button>}
+          {content && (
+            <button
+              onClick={async () => {
+                if (token) {
+                  await publishBlogHandler();
+                  await savePostedBlog();
+                } else {
+                  navigate("/post/login");
+                }
+              }}
+              className="rounded border-0 bg-green-600 px-4 py-2 font-medium hover:scale-105 active:scale-95 duration-150 text-white"
+            >
+              Publish
+            </button>
+          )}
         </div>
         <div>
           <p></p>

@@ -1,4 +1,3 @@
-import React from "react";
 import NavBar from "../components/NavBar.jsx";
 import Hero from "../components/Hero.jsx";
 import AiTools from "../components/AiTools.jsx";
@@ -10,11 +9,11 @@ const Home = () => {
   return (
     <>
       <NavBar />
-      <Hero/>
-      <AiTools/>
-      <Testimonial/>
-      <Plan/>
-      <Footer/>
+      <Hero />
+      <AiTools />
+      <Testimonial />
+      <Plan />
+      <Footer />
     </>
   );
 };

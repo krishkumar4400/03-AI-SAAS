@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { useAppContext } from "../context/AppContext";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const { axios, setToken, token } = useAppContext();
+  const { axios, setToken } = useAppContext();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,12 +19,12 @@ const Login = () => {
         {
           email,
           password,
-        }
+        },
       );
-      
+
       if (data.success) {
         toast.success(data.message);
-        navigate('/ai/generate-blog')
+        navigate("/ai/generate-blog");
         setToken(data.token);
         localStorage.setItem("token", data.token);
         // axios.defaults.headers.common["Authorization"] = data.token;

@@ -1,13 +1,5 @@
-import {
-  AreaChartIcon,
-  Edit,
-  Hash,
-  Pen,
-  Sparkles,
-  Square,
-  SquarePen,
-} from "lucide-react";
-import React, { useState } from "react";
+import { Hash, Sparkles } from "lucide-react";
+import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Markdown from "react-markdown";
@@ -29,7 +21,6 @@ const EmailWriter = () => {
     "Request Email",
     "Thank You Email",
   ];
-;
   const tones = [
     "Formal",
     "Professional",
@@ -38,8 +29,6 @@ const EmailWriter = () => {
     "Direct",
     "Concise",
   ];
-;
-
   const [subject, setSubject] = useState("");
   const [details, setDetails] = useState("");
   const [tone, setTone] = useState("");
@@ -57,16 +46,16 @@ const EmailWriter = () => {
       const { data } = await axios.post(
         "/api/ai/write-email",
         {
-            subject,
-            details,
-            tone,
-            emailType
+          subject,
+          details,
+          tone,
+          emailType,
         },
         {
           headers: {
             Authorization: `Bearer ${await getToken()}`,
           },
-        }
+        },
       );
 
       if (data.success) {

@@ -1,13 +1,5 @@
-import {
-  AreaChartIcon,
-  Edit,
-  Hash,
-  Pen,
-  Sparkles,
-  Square,
-  SquarePen,
-} from "lucide-react";
-import React, { useState } from "react";
+import { Hash, Sparkles } from "lucide-react";
+import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Markdown from "react-markdown";
@@ -16,13 +8,7 @@ import { useAuth } from "@clerk/clerk-react";
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
 const SocialMediaCaption = () => {
-  const platforms = [
-    "Instagram",
-    "Facebook",
-    "Youtube",
-    "LinkedIn",
-    "Twitter"
-  ];
+  const platforms = ["Instagram", "Facebook", "Youtube", "LinkedIn", "Twitter"];
   const tones = ["Formal", "Casual"];
 
   const [topic, setTopic] = useState("");
@@ -49,7 +35,7 @@ const SocialMediaCaption = () => {
           headers: {
             Authorization: `Bearer ${await getToken()}`,
           },
-        }
+        },
       );
 
       if (data.success) {
@@ -172,4 +158,3 @@ const SocialMediaCaption = () => {
 };
 
 export default SocialMediaCaption;
-

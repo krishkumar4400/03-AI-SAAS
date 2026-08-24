@@ -1,13 +1,5 @@
-import {
-  AreaChartIcon,
-  Edit,
-  Hash,
-  Pen,
-  Sparkles,
-  Square,
-  SquarePen,
-} from "lucide-react";
-import React, { useState } from "react";
+import { Hash, Sparkles } from "lucide-react";
+import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Markdown from "react-markdown";
@@ -49,7 +41,7 @@ const BlogTitles = () => {
           headers: {
             Authorization: `Bearer ${await getToken()}`,
           },
-        }
+        },
       );
 
       if (data.success) {
@@ -129,9 +121,7 @@ const BlogTitles = () => {
         {content ? (
           <div className="h-full mt-3 overflow-y-scroll text-sm text-slate-600">
             <div className="reset-tw">
-              <Markdown>
-                {content}
-              </Markdown>
+              <Markdown>{content}</Markdown>
             </div>
           </div>
         ) : (

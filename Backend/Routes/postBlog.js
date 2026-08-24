@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { postBlog } from "../Middlewares/auth.js";
-import { authorizePostBlog, savePostedBlog } from "../Controllers/aiControllers.js";
+import { postBlog } from "../middlewares/auth.js";
+import { authorizePostBlog, savePostedBlog } from "../controllers/aiControllers.js";
 
 const blogRouter = Router();
 

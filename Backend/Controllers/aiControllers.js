@@ -1,19 +1,11 @@
 import { v2 as cloudinary } from "cloudinary";
-import OpenAI from "openai";
-import sql from "../Config/connectDB.js";
+import sql from "../config/connectDB.js";
 import { clerkClient } from "@clerk/express";
 import fs from "fs";
 import pdf from "pdf-parse/lib/pdf-parse.js";
 import axios from "axios";
 import FormData from "form-data";
 import { GoogleGenAI } from "@google/genai";
-import jwt from "jsonwebtoken";
-import Blog from "../Model/Blog.js";
-
-// const AI = new OpenAI({
-//   apiKey: process.env.GEMINI_API_KEY,
-//   baseURL: "https://generativelanguage.googleapis.com/v1beta/openai",
-// });
 
 // The client gets the API key from the environment variable `GEMINI_API_KEY`.
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
@@ -40,18 +32,6 @@ export const generateArticle = async (req, res) => {
       });
     }
 
-    // const response = await AI.chat.completions.create({
-    //   model: "gemini-2.0-flash",
-    //   messages: [
-    //     {
-    //       role: "user",
-    //       content: prompt,
-    //     },
-    //   ],
-    //   temperature: 0.7,
-    //   max_tokens: length,
-    // });
-    // const content = response.choices[0].message.content;
     const content = await main(prompt);
     // console.log(content);
 
@@ -79,8 +59,6 @@ export const generateArticle = async (req, res) => {
   }
 };
 
-// 429 status code (no body).....................
-
 export const generateBlogTitle = async (req, res) => {
   try {
     const { userId } = req.auth(); // this auth will be added using the clerk middleware
@@ -95,18 +73,6 @@ export const generateBlogTitle = async (req, res) => {
       });
     }
 
-    // const response = await AI.chat.completions.create({
-    //   model: "gemini-2.0-flash",
-    //   messages: [
-    //     {
-    //       role: "user",
-    //       content: prompt,
-    //     },
-    //   ],
-    //   temperature: 0.7,
-    //   max_tokens: 100,
-    // });
-    // const content = response.choices[0].message.content;
     const content = await main(prompt);
 
     await sql`INSERT INTO creations (user_id, prompt, content, type) VALUES(${userId}, ${prompt}, ${content}, 'blog-title')`;
@@ -155,12 +121,12 @@ export const generateImage = async (req, res) => {
       {
         headers: { "x-api-key": process.env.CLIP_DROP_API_KEY },
         responseType: "arraybuffer",
-      }
+      },
     );
 
     const base64Image = `data:image/png;base64,${Buffer.from(
       data,
-      "binary"
+      "binary",
     ).toString("base64")}`;
 
     const { secure_url } = await cloudinary.uploader.upload(base64Image, {
@@ -221,6 +187,7 @@ export const removeImageBackground = async (req, res) => {
     });
   }
 };
+
 export const removeImageObject = async (req, res) => {
   try {
     const { userId } = req.auth(); // this auth will be added using the clerk middleware
@@ -263,10 +230,10 @@ export const resumeReview = async (req, res) => {
     const resume = req.file;
     const plan = req.plan;
 
-    if(!resume) {
+    if (!resume) {
       return res.json({
         message: "Please upload a resume",
-        success: false 
+        success: false,
       });
     }
 
@@ -876,12 +843,12 @@ Return only the category.
       {
         headers: { "x-api-key": process.env.CLIP_DROP_API_KEY },
         responseType: "arraybuffer",
-      }
+      },
     );
 
     const base64Image = `data:image/png;base64,${Buffer.from(
       data,
-      "binary"
+      "binary",
     ).toString("base64")}`;
 
     const { secure_url } = await cloudinary.uploader.upload(base64Image, {
@@ -911,57 +878,5 @@ Return only the category.
   } catch (error) {
     console.log(error);
     return res.json({ success: false, message: "Try again later" });
-  }
-};
-
-export const authorizePostBlog = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    if (!email || !password) {
-      return res.json({
-        message: "Missing details",
-        success: false,
-      });
-    }
-
-    if (
-      email !== process.env.ADMIN_EMAIL ||
-      password !== process.env.ADMIN_PASSWORD
-    ) {
-      return res.json({
-        message: "incorrect email id or password",
-        success: false,
-      });
-    }
-    const token = jwt.sign({ email }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
-
-    if (token) {
-      res.json({
-        token,
-        message: "you are logged in",
-        success: true,
-      });
-    }
-  } catch (error) {
-    console.log(error.message);
-  }
-};
-
-export const savePostedBlog = async (req, res) => {
-  try {
-    const { subTitle, description, category, image } = req.body.content;
-    const { title } = req.body;
-
-    await Blog.create({
-      title,
-      subTitle,
-      description,
-      category,
-      image,
-    });
-  } catch (error) {
-    console.log(error.message);
   }
 };

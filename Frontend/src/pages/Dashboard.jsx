@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Protect, useAuth } from "@clerk/clerk-react";
 import { Gem, Sparkle } from "lucide-react";
 import CreationItem from "../components/CreationItem.jsx";
 import axios from "axios";
 import toast from "react-hot-toast";
-import Markdown from "react-markdown";
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 

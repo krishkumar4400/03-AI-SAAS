@@ -1,5 +1,5 @@
 import { DownloadIcon, Eraser, SkipForward, Sparkles } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useAuth } from "@clerk/clerk-react";
@@ -31,7 +31,7 @@ const BlogTitles = () => {
           headers: {
             Authorization: `Bearer ${await getToken()}`,
           },
-        }
+        },
       );
 
       if (data.success) {
